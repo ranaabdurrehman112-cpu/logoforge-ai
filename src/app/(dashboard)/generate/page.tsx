@@ -22,9 +22,10 @@ const COLOR_THEMES = [
 ];
 
 export default function GenerateLogoPage() {
-  const [brandName, setBrandName] = useState('Nauraya');
-  const [slogan, setSlogan] = useState('Grace • Radiance • Heritage');
-  const [prompt, setPrompt] = useState('luxury rose gold lotus monogram crest, elegant womenswear apparel emblem');
+  // Empty initial state so new users get a clean form
+  const [brandName, setBrandName] = useState('');
+  const [slogan, setSlogan] = useState('');
+  const [prompt, setPrompt] = useState('');
 
   const [selectedFont, setSelectedFont] = useState(FONT_STYLES[2]); // Playfair by default
   const [selectedTheme, setSelectedTheme] = useState(COLOR_THEMES[1]); // Rose Gold by default
@@ -165,7 +166,7 @@ export default function GenerateLogoPage() {
     const image = canvasRef.current.toDataURL('image/png');
     const link = document.createElement('a');
     link.href = image;
-    link.download = `${brandName.toLowerCase()}-dynamic-logo.png`;
+    link.download = `${brandName.toLowerCase() || 'logo'}-dynamic-logo.png`;
     link.click();
   };
 
@@ -267,7 +268,7 @@ export default function GenerateLogoPage() {
                   rows={2}
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
-                  placeholder="e.g. Lotus monogram crest..."
+                  placeholder="e.g. Lotus monogram crest, elegant gold emblem..."
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 transition resize-none"
                   required
                 />
@@ -296,7 +297,7 @@ export default function GenerateLogoPage() {
             {loading ? (
               <div className="space-y-4 text-center">
                 <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mx-auto" />
-                <p className="text-sm text-slate-400">Rendering <span className="text-white font-semibold">{selectedTheme.name}</span> theme for <span className="text-white font-semibold">{brandName}</span>...</p>
+                <p className="text-sm text-slate-400">Rendering <span className="text-white font-semibold">{selectedTheme.name}</span> theme for <span className="text-white font-semibold">{brandName || 'your brand'}</span>...</p>
               </div>
             ) : logoData ? (
               <div className="flex flex-col items-center gap-5 w-full">

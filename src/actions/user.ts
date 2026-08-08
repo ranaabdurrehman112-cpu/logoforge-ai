@@ -36,6 +36,8 @@ export async function signupWithEmail(formData: FormData) {
     return { error: 'All fields are required.' };
   }
 
+  const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://logoforge-ai-abed2.vercel.app';
+
   const { error } = await supabase.auth.signUp({
     email,
     password,
@@ -43,6 +45,7 @@ export async function signupWithEmail(formData: FormData) {
       data: {
         full_name: fullName,
       },
+      emailRedirectTo: `${origin}/auth/callback`,
     },
   });
 
@@ -56,7 +59,8 @@ export async function signupWithEmail(formData: FormData) {
 export async function signInWithGoogle() {
   const supabase = await createClient();
 
-  const origin = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  // Primary URL set to live Vercel deployment
+  const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://logoforge-ai-abed2.vercel.app';
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
