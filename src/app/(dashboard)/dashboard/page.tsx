@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { Plus, Image as ImageIcon, Sparkles, Calendar } from 'lucide-react';
+import { Plus, Image as ImageIcon, Sparkles, Calendar, LogOut } from 'lucide-react';
 import LogoGallery from './LogoGallery';
 
 export default async function DashboardPage() {
@@ -12,6 +12,14 @@ export default async function DashboardPage() {
   if (authError || !user) {
     redirect('/login');
   }
+
+  // Server Action for Sign Out
+  const signOut = async () => {
+    'use server';
+    const supabase = await createClient();
+    await supabase.auth.signOut();
+    redirect('/login');
+  };
 
   const { data: logos } = await supabase
     .from('generated_logos')
@@ -36,12 +44,24 @@ export default async function DashboardPage() {
             </p>
           </div>
 
-          <Link
-            href="/generate"
-            className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-3 rounded-2xl shadow-lg shadow-indigo-600/30 transition text-sm cursor-pointer"
-          >
-            <Plus className="w-4 h-4" /> Create New Logo
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/generate"
+              className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2.5 rounded-2xl shadow-lg shadow-indigo-600/30 transition text-sm cursor-pointer"
+            >
+              <Plus className="w-4 h-4" /> Create New Logo
+            </Link>
+
+            {/* Sign Out Button */}
+            <form action={signOut}>
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition cursor-pointer"
+              >
+                <LogOut className="w-4 h-4" /> Sign Out
+              </button>
+            </form>
+          </div>
         </div>
 
         {/* Stats */}
